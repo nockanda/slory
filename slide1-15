@@ -1,0 +1,29 @@
+//8.로라A에 버튼 2개를 연결하고 로라B에 LED를 연결한다음 A가 on버튼을 누르면 LED가 켜지고 off버튼을 누르면 LED가 꺼지도록 하시오!(아주 초보자용 버전)
+#include <SoftwareSerial.h>
+
+//로라제품이 아두이노의 2(tx),3(rx)번핀에 연결되어있다!
+SoftwareSerial lora(2,3);
+
+#define btn_on 4
+#define btn_off 5
+
+void setup() {
+  Serial.begin(9600); //PC와 아두이노간
+  lora.begin(9600); //아두이노와 로라모듈간
+  pinMode(btn_on,INPUT_PULLUP);
+  pinMode(btn_off,INPUT_PULLUP);
+}
+
+void loop() {
+  if(digitalRead(btn_on) == LOW){
+    lora.write('1');
+    Serial.println("ON버튼 눌려짐");
+    delay(300); //버튼 누른것을 1회로 보장한다!
+  }
+  if(digitalRead(btn_off) == LOW){
+    lora.write('0');
+    Serial.println("OFF버튼 눌려짐");
+    delay(300); //버튼 누른것을 1회로 보장한다!
+  }
+}
+
