@@ -1,0 +1,25 @@
+//2.로라A가 로라B에게 "안녕"이라고 전송하면 "반갑습니다"라고 응답하고 "녹칸다"라고 전송하면 "포에버"라고 응답하도록 하시오!(로라A는 시리얼모니터에서 입력하는것으로 함)
+
+#include <SoftwareSerial.h>
+
+//로라제품이 아두이노의 2(tx),3(rx)번핀에 연결되어있다!
+SoftwareSerial lora(2,3);
+
+void setup() {
+  Serial.begin(9600); //PC와 아두이노간
+  lora.begin(9600); //아두이노와 로라모듈간
+}
+
+void loop() {
+  if(lora.available()){
+    String data = lora.readStringUntil('\r');
+    if(data == "안녕"){
+      lora.print("반갑습니다");
+    }else if(data == "녹칸다"){
+      lora.print("포에버");
+    }else{
+      lora.print("무슨말인지 모르겠어요!");
+    }
+  }
+}
+
