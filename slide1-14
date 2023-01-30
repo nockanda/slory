@@ -1,0 +1,22 @@
+//7.로라B가 로라A에게 2초간격으로 일정하게 데이터를 전송하는데 float데이터 1개, int데이터 1개, char 데이터 1개를 전송하도록 하시오!
+#include <SoftwareSerial.h>
+
+//로라제품이 아두이노의 2(tx),3(rx)번핀에 연결되어있다!
+SoftwareSerial lora(2,3);
+
+struct{
+  float data1 = 12.34;
+  int data2 = -2023;
+  char data3 = '*';
+}mydata;
+
+void setup() {
+  Serial.begin(9600); //PC와 아두이노간
+  lora.begin(9600); //아두이노와 로라모듈간
+}
+
+void loop() {
+  lora.write((byte*)&mydata,sizeof(mydata));
+  delay(2000);
+}
+
