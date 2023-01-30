@@ -1,0 +1,17 @@
+//1.로라A가 수신기가되고 로라B가 송신기가 되어서 로라B가 2초간격으로 로라A에게 "나는 녹칸다이다"라는 메시지를 전송하도록 하시오!
+
+#include <SoftwareSerial.h>
+
+//로라제품이 아두이노의 2(tx),3(rx)번핀에 연결되어있다!
+SoftwareSerial lora(2,3);
+
+void setup() {
+  Serial.begin(9600); //PC와 아두이노간
+  lora.begin(9600); //아두이노와 로라모듈간
+}
+
+void loop() {
+  lora.println("나는 녹칸다이다!");
+  delay(2000);
+}
+
