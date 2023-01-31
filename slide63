@@ -1,0 +1,32 @@
+//7.송신기에 미세먼지센서를 연결하고 측정값을 수신기의 시리얼 모니터에 출력하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int pm1_0;
+  unsigned int pm2_5;
+  unsigned int pm10_0;
+}mydata;
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600); //PC-아두이노
+  lora.begin(9600); //아두이노-로라
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(mydata));
+    memcpy(&mydata,buff,sizeof(mydata));
+    Serial.print("PM1.0=");
+    Serial.print(mydata.pm1_0);
+    Serial.print("ug/m3, PM2.5=");
+    Serial.print(mydata.pm2_5);
+    Serial.print("ug/m3, PM10.0=");
+    Serial.print(mydata.pm10_0);
+    Serial.print("ug/m3");
+    Serial.println();
+  }
+}
+
