@@ -1,0 +1,30 @@
+//8.송신기에 조도센서(BH1750)를 연결해서 측정한 광량을 수신기의 시리얼모니터에 출력하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int cnt;
+  float lux;
+}mydata;
+
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600); //PC-아두이노
+  lora.begin(9600); //아두이노-로라
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(mydata));
+    memcpy(&mydata,buff,sizeof(mydata));
+    Serial.print("현재카운터=");
+    Serial.print(mydata.cnt);
+    Serial.print("회, 광량=");
+    Serial.print(mydata.lux);
+    Serial.print("lux");
+    Serial.println();
+  }
+}
+
