@@ -1,0 +1,20 @@
+//4.송신기에 마그네틱스위치를 연결하고 2개의 조각이 떨어지면 문이 열렸다, 2개의 조각이 붙으면 문이 닫혔다라는 신호를 수신기쪽으로 전송해서 수신기의 시리얼 모니터에 결과를 출력하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+#define doorsensor 4
+
+void setup() {
+  Serial.begin(9600); //PC-아두이노
+  lora.begin(9600); //아두이노-로라
+  pinMode(doorsensor,INPUT_PULLUP);
+}
+
+void loop() {
+  //0이면 문이 닫힘, 1이면 문이 열림!
+  byte data = digitalRead(doorsensor); //0 or 1
+  lora.write(data);
+  delay(1000);
+}
+
