@@ -1,0 +1,27 @@
+//6.송신기에 이산화탄소센서(MH-Z19B)를 연결하고 측정한 이산화탄소농도값을 수신기로 전송해서 시리얼모니터에 출력하시오!
+#include <SoftwareSerial.h>
+#include <MHZ19.h>
+
+MHZ19 mhz(&Serial);
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int counter = 0;
+  unsigned int co2;
+}mydata;
+
+void setup() {
+  Serial.begin(9600); //이산화탄소센서-아두이노
+  lora.begin(9600); //아두이노-로라
+
+}
+
+void loop() {
+  mhz.retrieveData();
+  mydata.co2 = mhz.getCO2();
+  lora.write((byte*)&mydata,sizeof(mydata));
+  mydata.counter++;
+  delay(2000);
+}
+
