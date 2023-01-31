@@ -1,0 +1,37 @@
+//2.송신기에서 수신기쪽으로 내부 시간값을 1초간격으로 전송할때 그 값을 lcd화면에 출력하시오!(millis())
+#include <SoftwareSerial.h>
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+
+//주소는 특별하지 않으면 0x27
+LiquidCrystal_I2C lcd(0x27,16,2); 
+SoftwareSerial lora(2,3);
+
+unsigned long t = 0;
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600); //PC-아두이노
+  lora.begin(9600); //아두이노-로라
+  lcd.init();
+  lcd.backlight();
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(unsigned long));
+    memcpy(&t,buff,sizeof(unsigned long));
+    //lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("now millis()=");
+    lcd.setCursor(0,1);
+    //길이를 15로 무조건 맞춘다
+    String line2 = String(t);
+    while(line2.length() < 15){
+      line2 += " ";
+    }
+    lcd.print(line2);
+    
+  }
+}
+
