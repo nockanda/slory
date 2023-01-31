@@ -1,0 +1,29 @@
+//5.송신기에 온습도센서(DHT-11)를 연결해서 측정된 온도와 습도값을 수신기쪽으로 전송해서 시리얼모니터에 출력하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  float temp;
+  float humi;
+}mydata;
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600); //PC-아두이노
+  lora.begin(9600); //아두이노-로라
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(mydata));
+    memcpy(&mydata,buff,sizeof(mydata));
+    Serial.print("온도=");
+    Serial.print(mydata.temp);
+    Serial.print("'C, 습도=");
+    Serial.print(mydata.humi);
+    Serial.print("%");
+    Serial.println();
+  }
+}
+
