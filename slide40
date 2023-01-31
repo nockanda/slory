@@ -1,0 +1,18 @@
+//1.로라A를 송신기로 설정하고 로라B를 수신기로 설정한다! 수신기에 TM1637을 연결한다! 송신기에서 1초간격으로 0부터시작해서 1씩올라간 숫자를 수신기쪽으로 전송한다! 수신기는 카운터값을 받아서 FND화면에 출력하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+unsigned int counter = 0;
+
+void setup() {
+  Serial.begin(9600); //PC-아두이노
+  lora.begin(9600); //아두이노-로라
+}
+
+void loop() {
+  lora.write((byte*)&counter,sizeof(counter));
+  counter++;
+  delay(1000);
+}
+
