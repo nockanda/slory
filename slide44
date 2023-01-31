@@ -1,0 +1,18 @@
+//2.송신기에서 수신기쪽으로 내부 시간값을 1초간격으로 전송할때 그 값을 lcd화면에 출력하시오!(millis())
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+unsigned long t = 0;
+
+void setup() {
+  Serial.begin(9600); //PC-아두이노
+  lora.begin(9600); //아두이노-로라
+}
+
+void loop() {
+  t = millis();
+  lora.write((byte*)&t,sizeof(t));
+  delay(1000);
+}
+
