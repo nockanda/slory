@@ -1,0 +1,35 @@
+//1.로라 송신기에 ds18b20센서가 연결되어있고 측정한 온도값을 카운터값과 함께 수신기 쪽으로 전송하시오!
+#include <SoftwareSerial.h>
+
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#define ONE_WIRE_BUS 4
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int cnt;
+  float temp;
+}mydata;
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+  sensors.begin();
+}
+
+void loop() {
+  sensors.requestTemperatures();
+  float tempC = sensors.getTempCByIndex(0);
+  if(tempC != DEVICE_DISCONNECTED_C) 
+  {
+    //tempC
+    mydata.temp = tempC;
+    lora.write((byte*)&mydata,sizeof(mydata));
+    mydata.cnt++;
+  }
+  delay(1000);
+}
+
