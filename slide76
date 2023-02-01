@@ -1,0 +1,28 @@
+//2.로라 송신기에 써모커플이 연결되어있고 측정한 온도값을 카운터값과 함께 수신기 쪽으로 전송하시오!
+#include <SoftwareSerial.h>
+#include "max6675.h"
+
+int thermoDO = 4; //SO
+int thermoCS = 5; //CS
+int thermoCLK = 6; //SCK
+MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int cnt;
+  float temp;
+}mydata;
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+}
+
+void loop() {
+  mydata.temp = thermocouple.readCelsius();
+  lora.write((byte*)&mydata,sizeof(mydata));
+  mydata.cnt++;
+  delay(1000);
+}
+
