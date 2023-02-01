@@ -1,0 +1,33 @@
+//6.비접촉수위센서의 결과를 송신기에서 수신기로 전송하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  byte result;
+  unsigned int cnt;
+}mydata;
+
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(mydata));
+    memcpy(&mydata,buff,sizeof(mydata));
+    Serial.print("카운터=");
+    Serial.print(mydata.cnt);
+    Serial.print("회, ");
+    if(mydata.result == 0){
+      Serial.print("[센서] : 미감지");
+    }else{
+      Serial.print("[센서] : 감지");
+    }
+    Serial.println();
+  }
+}
+
