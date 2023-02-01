@@ -1,0 +1,36 @@
+#include <SoftwareSerial.h>
+
+#define led 4
+
+SoftwareSerial lora(2,3);
+
+unsigned long t = 0; //송신할때의 시간간격
+unsigned long last_msg_t = 0;
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+  pinMode(led,OUTPUT);  
+}
+
+void loop() {
+  if(millis() - last_msg_t > 10000){
+    digitalWrite(led,HIGH);
+  }else{
+    digitalWrite(led,LOW);
+  }
+  
+  if(millis() - t > 5000){
+    t = millis();
+    lora.print("나는 녹칸다입니다!");  
+  }
+
+  if(lora.available()){
+    //마지막으로 응답받은 시점을 기준으로해서 5초가 지나면 실패로 간주한다!
+    String recv = lora.readStringUntil('\r');
+    if(recv == "OK"){
+      last_msg_t = millis();
+    }
+  }
+}
+
