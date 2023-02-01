@@ -1,0 +1,37 @@
+#include <SoftwareSerial.h>
+
+#define led 4
+#define TIMEOUT 10000
+
+SoftwareSerial lora(2,3);
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+  pinMode(led,OUTPUT);  
+}
+
+void loop() {
+  lora.print("나는 녹칸다입니다!");  
+  Serial.println("응답을 기다립니다!");
+  unsigned long t = millis();
+  while(true){
+    if(millis() - t > TIMEOUT){
+      //송신기가 3초 기다렸다!
+      digitalWrite(led,HIGH);
+      Serial.println("타임아웃이 발생했다!");
+      break;
+    }
+    if(lora.available()){
+      String recv = lora.readStringUntil('\r');
+      if(recv == "OK"){
+        digitalWrite(led,LOW);
+        Serial.println("응답이 왔습니다!");
+        break;  
+      }
+    }
+  }
+  Serial.println("2초쉬고 다시 전송한다!");
+  delay(2000);
+}
+
