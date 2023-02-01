@@ -1,0 +1,44 @@
+//5.로라 송신기에 LPG가스센서(MQ-6)가 연결되어있고 측정한 가스농도를 수신기로 전송해서 시리얼모니터에 출력하시오!
+#include <SoftwareSerial.h>
+#include <MQUnifiedsensor.h>
+#define placa "Arduino UNO"
+#define Voltage_Resolution 5
+#define pin A0 //Analog input 0 of your arduino
+#define type "MQ-6" //MQ6
+#define ADC_Bit_Resolution 10 // For arduino UNO/MEGA/NANO
+#define RatioMQ6CleanAir 10   //RS / R0 = 10 ppm 
+MQUnifiedsensor MQ6(placa, Voltage_Resolution, ADC_Bit_Resolution, pin, type);
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int cnt;
+  float lpg;
+}mydata;
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+  MQ6.setRegressionMethod(1);
+  MQ6.setA(2127.2); MQ6.setB(-2.526);
+  MQ6.init(); 
+  Serial.print("Calibrating please wait.");
+  float calcR0 = 0;
+  for(int i = 1; i<=10; i ++)
+  {
+    MQ6.update(); // Update data, the arduino will read the voltage from the analog pin
+    calcR0 += MQ6.calibrate(RatioMQ6CleanAir);
+    Serial.print(".");
+  }
+  MQ6.setR0(calcR0/10);
+  Serial.println("  done!.");
+}
+
+void loop() {
+  MQ6.update();
+  mydata.lpg = MQ6.readSensor();
+  lora.write((byte*)&mydata,sizeof(mydata));
+  mydata.cnt++;
+  delay(1000);
+}
+
