@@ -1,0 +1,27 @@
+//3.로라 송신기에 PT100이 연결되어있고 측정한 온도값을 카운터값과 함께 수신기 쪽으로 전송하시오!
+#include <SoftwareSerial.h>
+#include <Adafruit_MAX31865.h>
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(10);
+#define RREF      430.0
+#define RNOMINAL  100.0
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int cnt;
+  float temp;
+}mydata;
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+  thermo.begin(MAX31865_3WIRE);
+}
+
+void loop() {
+  mydata.temp = thermo.temperature(RNOMINAL, RREF);
+  lora.write((byte*)&mydata,sizeof(mydata));
+  mydata.cnt++;
+  delay(1000);
+}
+
