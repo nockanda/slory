@@ -1,0 +1,17 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+}
+
+void loop() {
+  if(lora.available()){
+    String data = lora.readStringUntil('\r');
+    Serial.println(data);
+    lora.print("OK");
+  }
+}
+
