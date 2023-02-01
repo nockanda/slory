@@ -1,0 +1,46 @@
+//4.로라 송신기에 알콜센서(MQ-3)가 연결되어있고 측정한 알콜농도를 수신기로 전송해서 시리얼모니터에 출력하시오!
+#include <SoftwareSerial.h>
+#include <MQUnifiedsensor.h>
+/************************Hardware Related Macros************************************/
+#define         Board                   ("Arduino UNO")
+#define         Pin                     (A0)
+/***********************Software Related Macros************************************/
+#define         Type                    ("MQ-3") //MQ3
+#define         Voltage_Resolution      (5)
+#define         ADC_Bit_Resolution      (10) // For arduino UNO/MEGA/NANO
+#define         RatioMQ3CleanAir        (60) //RS / R0 = 60 ppm 
+MQUnifiedsensor MQ3(Board, Voltage_Resolution, ADC_Bit_Resolution, Pin, Type);
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int cnt;
+  float alcohol;
+}mydata;
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+  MQ3.setRegressionMethod(1); 
+  MQ3.setA(4.8387); MQ3.setB(-2.68);
+  MQ3.init();
+  Serial.print("Calibrating please wait.");
+  float calcR0 = 0;
+  for(int i = 1; i<=10; i ++)
+  {
+    MQ3.update(); // Update data, the arduino will read the voltage from the analog pin
+    calcR0 += MQ3.calibrate(RatioMQ3CleanAir);
+    Serial.print(".");
+  }
+  MQ3.setR0(calcR0/10);
+  Serial.println("  done!.");
+}
+
+void loop() {
+  MQ3.update();
+  mydata.alcohol = MQ3.readSensor();
+  lora.write((byte*)&mydata,sizeof(mydata));
+  mydata.cnt++;
+  delay(1000);
+}
+
