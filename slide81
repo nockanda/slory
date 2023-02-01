@@ -1,0 +1,30 @@
+//3.로라 송신기에 PT100이 연결되어있고 측정한 온도값을 카운터값과 함께 수신기 쪽으로 전송하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int cnt;
+  float temp;
+}mydata;
+
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(mydata));
+    memcpy(&mydata,buff,sizeof(mydata));
+    Serial.print("카운터=");
+    Serial.print(mydata.cnt);
+    Serial.print("회, 온도=");
+    Serial.print(mydata.temp);
+    Serial.print("'C");
+    Serial.println();
+  }
+}
+
