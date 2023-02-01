@@ -1,0 +1,30 @@
+//4.로라 송신기에 알콜센서(MQ-3)가 연결되어있고 측정한 알콜농도를 수신기로 전송해서 시리얼모니터에 출력하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  unsigned int cnt;
+  float alcohol;
+}mydata;
+
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600); //pc-아두이노간
+  lora.begin(9600); //아두이노 - 로라
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(mydata));
+    memcpy(&mydata,buff,sizeof(mydata));
+    Serial.print("카운터=");
+    Serial.print(mydata.cnt);
+    Serial.print("회, 알콜농도=");
+    Serial.print(mydata.alcohol,6);
+    Serial.print("PPM");
+    Serial.println();
+  }
+}
+
