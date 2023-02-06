@@ -1,0 +1,31 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  float num1; //4
+  float num2; //4
+  float num3; //4
+}mystruct;
+
+void setup() {
+  Serial.begin(9600); // PC와 아두이노간(LoRa)
+  lora.begin(9600); //아두이노와 lora간 통신
+}
+
+void loop() {
+  mystruct.num1 = random(0,10000)/100.0; //0.00~99.99
+  mystruct.num2 = random(0,10000)/100.0; //0.00~99.99
+  mystruct.num3 = random(0,10000)/100.0; //0.00~99.99
+  Serial.print("첫번째 수=");
+  Serial.print(mystruct.num1);
+  Serial.print(", 두번째 수=");
+  Serial.print(mystruct.num2);
+  Serial.print(", 세번째 수=");
+  Serial.print(mystruct.num3);
+  Serial.println();
+  lora.write((byte*)&mystruct,sizeof(mystruct));
+  delay(2000);
+}
+
+
