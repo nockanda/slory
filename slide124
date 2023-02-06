@@ -1,0 +1,39 @@
+//6.송신기에 버튼8개를 걷어내고 4x4키패드를 연결해서 0~7까지 버튼을 이용해서 각 채널의 릴레이를 토글시키고 *모양을 누르면 전체가 다 ON되고 #을 누르면 전체가 OFF되도록하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  byte btn_num; //버튼번호 0~7
+}cmd;
+
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600);
+  lora.begin(9600);
+  for(int i = 4;i<=11;i++){
+    pinMode(i,OUTPUT);
+    digitalWrite(i,HIGH);
+  }
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(cmd));
+    memcpy(&cmd,buff,sizeof(cmd));
+    //cmd.btn_num
+    if(cmd.btn_num <=7){
+      digitalWrite(4+cmd.btn_num, !digitalRead(4+cmd.btn_num));
+    }else if(cmd.btn_num == 8){
+      for(int i = 4;i<=11;i++){
+        digitalWrite(i,HIGH);
+      }
+    }else if(cmd.btn_num == 9){
+      for(int i = 4;i<=11;i++){
+        digitalWrite(i,LOW);
+      }
+    }
+  }
+}
+
