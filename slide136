@@ -1,0 +1,19 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+void setup() {
+  Serial.begin(9600); // PC와 아두이노간(LoRa)
+  lora.begin(9600); //아두이노와 lora간 통신
+}
+
+void loop() {
+  int num1 = random(0,1000); //0~999
+  int num2 = random(0,1000); //0~999
+  int num3 = random(0,1000); //0~999
+  
+  String mydata = "{\"num1\":"+String(num1)+",\"num2\":"+String(num2)+",\"num3\":"+String(num3)+"}";
+  lora.println(mydata);
+  delay(2000);
+}
+
