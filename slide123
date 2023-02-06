@@ -1,0 +1,49 @@
+//6.송신기에 버튼8개를 걷어내고 4x4키패드를 연결해서 0~7까지 버튼을 이용해서 각 채널의 릴레이를 토글시키고 *모양을 누르면 전체가 다 ON되고 #을 누르면 전체가 OFF되도록하시오!
+#include <SoftwareSerial.h>
+#include <Keypad.h>
+
+const byte ROWS = 4;
+const byte COLS = 4;
+char hexaKeys[ROWS][COLS] = {
+  {'1','2','3','A'},
+  {'4','5','6','B'},
+  {'7','8','9','C'},
+  {'*','0','#','D'}
+};
+byte rowPins[ROWS] = {11, 10, 9, 8};
+byte colPins[COLS] = {7, 6, 5, 4};
+
+Keypad customKeypad = Keypad( makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
+
+SoftwareSerial lora(2,3);
+
+struct{
+  byte btn_num; //버튼번호 0~7
+}cmd;
+
+void setup() {
+  Serial.begin(9600);
+  lora.begin(9600);
+  //4~11번까지 버튼을 입력으로 설정한다!
+  for(int i = 4;i<=11;i++){
+    pinMode(i,INPUT_PULLUP);
+  }
+}
+
+void loop() {
+  char customKey = customKeypad.getKey();
+  
+  if (customKey >= '0' && customKey <= '7'){
+    cmd.btn_num = customKey - '0';
+    lora.write((byte*)&cmd,sizeof(cmd));
+  }else if(customKey == '*'){
+    cmd.btn_num = 8;
+    lora.write((byte*)&cmd,sizeof(cmd));
+  }else if(customKey == '#'){
+    cmd.btn_num = 9;
+    lora.write((byte*)&cmd,sizeof(cmd));
+  }
+  
+    
+}
+
