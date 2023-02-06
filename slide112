@@ -1,0 +1,29 @@
+//3.버튼1~8까지 총 8개가 있는데 1번버튼을 누르면 22도, 2번버튼을 누르면 44도 .... 8번버튼을 누르면 180도 위치로 서보모터가 각도제어되도록 하시오!
+#include <SoftwareSerial.h>
+#include <Servo.h>
+Servo myservo;
+
+SoftwareSerial lora(2,3);
+
+struct{
+  byte btn_num; //버튼번호 0~7
+  byte degree; //서보모터의 목표각도(0~180)
+}cmd;
+
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600);
+  lora.begin(9600);
+  myservo.attach(4);
+  myservo.write(0);
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(cmd));
+    memcpy(&cmd,buff,sizeof(cmd));
+    myservo.write(cmd.degree);
+  }
+}
+
