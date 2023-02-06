@@ -1,0 +1,24 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+#define myled 13
+
+void setup() {
+  Serial.begin(9600); // PC와 아두이노간(LoRa)
+  lora.begin(9600); //아두이노와 lora간 통신
+  pinMode(myled,OUTPUT);
+}
+
+void loop() {
+  if(lora.available()){
+    char c = lora.read();
+    if(c == '0'){
+      digitalWrite(myled,LOW);
+    }else if(c == '1'){
+      digitalWrite(myled,HIGH);
+    }
+  }
+}
+
+
