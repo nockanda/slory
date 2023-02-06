@@ -1,0 +1,29 @@
+//5.송신기에 버튼이 8개가있고 각버튼은 수신기에 달려있는 8채널릴레이의 각 릴레이에 1:1로 맵핑되어있다! 1번버튼을 누르면 1채널릴레이의 상태가 토글되도록 하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  byte btn_num; //버튼번호 0~7
+}cmd;
+
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600);
+  lora.begin(9600);
+  for(int i = 4;i<=11;i++){
+    pinMode(i,OUTPUT);
+    digitalWrite(i,HIGH);
+  }
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(cmd));
+    memcpy(&cmd,buff,sizeof(cmd));
+    //cmd.btn_num
+    digitalWrite(4+cmd.btn_num, !digitalRead(4+cmd.btn_num));
+  }
+}
+
