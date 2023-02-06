@@ -1,0 +1,27 @@
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  float temp; //4
+  float humi; //4
+}mystruct;
+
+void setup() {
+  Serial.begin(9600); // PC와 아두이노간(LoRa)
+  lora.begin(9600); //아두이노와 lora간 통신
+}
+
+void loop() {
+  mystruct.temp = random(0,5001)/100.0;
+  mystruct.humi = random(0,5001)/100.0;
+  Serial.print("온도=");
+  Serial.print(mystruct.temp);
+  Serial.print("'C, 습도=");
+  Serial.print(mystruct.humi);
+  Serial.println("%");
+  lora.write((byte*)&mystruct,sizeof(mystruct));
+  delay(2000);
+}
+
+
