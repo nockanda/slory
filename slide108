@@ -1,0 +1,72 @@
+//2.예제1번에서 버튼 8개를 송신기에 연결해서 수신기에 연결된 LED 4개를 제어하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  byte led_num; //led번호를 0~3
+  byte led_sw; //0이면 off, 1이면 on
+}cmd;
+
+void setup() {
+  Serial.begin(9600);
+  lora.begin(9600);
+  //4~11번까지 버튼을 입력으로 설정한다!
+  for(int i = 4;i<=11;i++){
+    pinMode(i,INPUT_PULLUP);
+  }
+}
+
+void loop() {
+  if(digitalRead(4) == LOW){
+    cmd.led_num = 0;
+    cmd.led_sw = 0;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(5) == LOW){
+    cmd.led_num = 0;
+    cmd.led_sw = 1;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(6) == LOW){
+    cmd.led_num = 1;
+    cmd.led_sw = 0;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(7) == LOW){
+    cmd.led_num = 1;
+    cmd.led_sw = 1;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(8) == LOW){
+    cmd.led_num = 2;
+    cmd.led_sw = 0;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(9) == LOW){
+    cmd.led_num = 2;
+    cmd.led_sw = 1;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(10) == LOW){
+    cmd.led_num = 3;
+    cmd.led_sw = 0;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(11) == LOW){
+    cmd.led_num = 3;
+    cmd.led_sw = 1;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  
+    
+}
+
