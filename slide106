@@ -1,0 +1,42 @@
+//1.수신기에 LED가 4개 연결되어있고 송신기의 명령에 의해서 각 LED가 제어될때 송신기는 PC와 USB로 연결되어서 시리얼모니터의 입력에 의해 수신기에 달린 LED가 제어되도록 하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+#define led0 4
+#define led1 5
+#define led2 6
+#define led3 7
+
+struct{
+  byte led_num; //led번호를 0~3
+  byte led_sw; //0이면 off, 1이면 on
+}cmd;
+
+byte buff[50];
+
+void setup() {
+  Serial.begin(9600);
+  lora.begin(9600);
+  pinMode(led0,OUTPUT);
+  pinMode(led1,OUTPUT);
+  pinMode(led2,OUTPUT);
+  pinMode(led3,OUTPUT);
+}
+
+void loop() {
+  if(lora.available()){
+    lora.readBytes(buff,sizeof(cmd));
+    memcpy(&cmd,buff,sizeof(cmd));
+    if(cmd.led_num == 0){
+      digitalWrite(led0, cmd.led_sw);
+    }else if(cmd.led_num == 1){
+      digitalWrite(led1, cmd.led_sw);
+    }else if(cmd.led_num == 2){
+      digitalWrite(led2, cmd.led_sw);
+    }else if(cmd.led_num == 3){
+      digitalWrite(led3, cmd.led_sw);
+    }
+  }
+}
+
