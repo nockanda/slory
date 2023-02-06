@@ -1,0 +1,72 @@
+//4.송신기에 버튼을 연결하고 수신기에 스탭모터를 연결해서 각버튼에 해당하는 스탭량만큼 스탭모터를 회전시키시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  byte btn_num; //버튼번호 0~7
+  int mystep; //전달받은 스탭량
+}cmd;
+
+void setup() {
+  Serial.begin(9600);
+  lora.begin(9600);
+  //4~11번까지 버튼을 입력으로 설정한다!
+  for(int i = 4;i<=11;i++){
+    pinMode(i,INPUT_PULLUP);
+  }
+}
+
+void loop() {
+  if(digitalRead(4) == LOW){
+    cmd.btn_num = 0;
+    cmd.mystep = 1024;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(5) == LOW){
+    cmd.btn_num = 1;
+    cmd.mystep = 2048;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(6) == LOW){
+    cmd.btn_num = 2;
+    cmd.mystep = 3072;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(7) == LOW){
+    cmd.btn_num = 3;
+    cmd.mystep = 4096;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(8) == LOW){
+    cmd.btn_num = 4;
+    cmd.mystep = -1024;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(9) == LOW){
+    cmd.btn_num = 5;
+    cmd.mystep = -2048;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(10) == LOW){
+    cmd.btn_num = 6;
+    cmd.mystep = -3072;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(11) == LOW){
+    cmd.btn_num = 7;
+    cmd.mystep = -4096;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  
+    
+}
+
