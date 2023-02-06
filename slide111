@@ -1,0 +1,72 @@
+//3.버튼1~8까지 총 8개가 있는데 1번버튼을 누르면 22도, 2번버튼을 누르면 44도 .... 8번버튼을 누르면 180도 위치로 서보모터가 각도제어되도록 하시오!
+#include <SoftwareSerial.h>
+
+SoftwareSerial lora(2,3);
+
+struct{
+  byte btn_num; //버튼번호 0~7
+  byte degree; //서보모터의 목표각도(0~180)
+}cmd;
+
+void setup() {
+  Serial.begin(9600);
+  lora.begin(9600);
+  //4~11번까지 버튼을 입력으로 설정한다!
+  for(int i = 4;i<=11;i++){
+    pinMode(i,INPUT_PULLUP);
+  }
+}
+
+void loop() {
+  if(digitalRead(4) == LOW){
+    cmd.btn_num = 0;
+    cmd.degree = 22;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(5) == LOW){
+    cmd.btn_num = 1;
+    cmd.degree = 44;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(6) == LOW){
+    cmd.btn_num = 2;
+    cmd.degree = 66;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(7) == LOW){
+    cmd.btn_num = 3;
+    cmd.degree = 88;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(8) == LOW){
+    cmd.btn_num = 4;
+    cmd.degree = 110;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(9) == LOW){
+    cmd.btn_num = 5;
+    cmd.degree = 132;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(10) == LOW){
+    cmd.btn_num = 6;
+    cmd.degree = 154;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  if(digitalRead(11) == LOW){
+    cmd.btn_num = 7;
+    cmd.degree = 176;
+    lora.write((byte*)&cmd,sizeof(cmd));
+    delay(500);
+  }
+  
+    
+}
+
